@@ -240,7 +240,7 @@ loadSites();
 async function loadSites() {
 
   const container = document.getElementById("sitesList");
-  container.innerHTML = "";
+  container.innerHTML = "<p>⏳ Please wait loading your sites...</p>";
 
   const userId = localStorage.getItem("userId");
 
@@ -265,6 +265,7 @@ async function loadSites() {
 
   } catch (err) {
     console.error("Failed to load sites", err);
+    container.innerHTML = "<p>Failed to load your sites. Please try again</p>";
   }
 
 }
