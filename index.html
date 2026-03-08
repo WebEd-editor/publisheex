@@ -248,7 +248,7 @@ async function loadSites() {
 
     const res = await fetch(API+`/mysites/${userId}`);
     const sites = await res.json();
-
+    container.innerHTML ="";
     sites.forEach(site => {
 
       const div = document.createElement("div");
