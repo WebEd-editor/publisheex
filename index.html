@@ -1,25 +1,30 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>WebEd Publisher</title>
+<title>WebEd Dashboard</title>
 
 <style>
+
 body{
 font-family:Arial;
-max-width:700px;
+max-width:800px;
 margin:auto;
 padding:20px;
 }
 
-input, textarea{
+input,textarea{
 width:100%;
 padding:10px;
-margin:10px 0;
+margin:8px 0;
 }
 
 button{
 padding:10px 20px;
 cursor:pointer;
+}
+
+#dashboard{
+display:none;
 }
 
 #loader{
@@ -28,15 +33,45 @@ color:blue;
 }
 
 .site{
-padding:8px;
+padding:6px;
 border-bottom:1px solid #ddd;
 }
+
 </style>
+
 </head>
 
 <body>
 
-<h2>Publish Website 🚀</h2>
+<h2>WebEd</h2>
+
+<!-- LOGIN / SIGNUP -->
+
+<div id="auth">
+
+<h3>Login</h3>
+
+<input id="loginUser" placeholder="Username">
+<input id="loginPass" type="password" placeholder="Password">
+
+<button onclick="login()">Login</button>
+
+<hr>
+
+<h3>Sign Up</h3>
+
+<input id="signupUser" placeholder="Username">
+<input id="signupPass" type="password" placeholder="Password">
+
+<button onclick="signup()">Sign Up</button>
+
+</div>
+
+<!-- DASHBOARD -->
+
+<div id="dashboard">
+
+<h3>Publish Website 🚀</h3>
 
 <input id="slug" placeholder="Website name (example: demo)">
 
@@ -46,64 +81,187 @@ border-bottom:1px solid #ddd;
 
 <p id="loader">⏳ Please wait publishing...</p>
 
-<h3>Live Websites</h3>
+<hr>
+
+<h3>My Sites</h3>
 
 <div id="sitesList"></div>
 
+<br>
+
+<button onclick="logout()">Logout</button>
+
+</div>
+
 <script>
 
-async function publishSite(){
+const API = "https://site.webed.in";
 
-const slug = document.getElementById("slug").value.trim();
-const html = document.getElementById("code").value;
+//////////////////////////////////////////////////
+// LOGIN
+//////////////////////////////////////////////////
 
-if(!slug || !html){
-alert("Enter site name and code");
-return;
-}
+async function login(){
 
-document.getElementById("loader").style.display="block";
+const username=document.getElementById("loginUser").value;
+const password=document.getElementById("loginPass").value;
 
-const res = await fetch("https://site.webed.in/publish",{
+const res=await fetch(API+"/login",{
+
 method:"POST",
-headers:{ "Content-Type":"application/json" },
-body:JSON.stringify({
-slug:slug,
-html:html
-})
+
+headers:{ "Content-Type":"application/json"},
+
+body:JSON.stringify({username,password})
+
 });
 
-const data = await res.json();
+const data=await res.json();
 
-document.getElementById("loader").style.display="none";
+if(data.userId){
 
-alert(data.message);
+localStorage.setItem("userId",data.userId);
+
+showDashboard();
+
+}else{
+
+alert(data.error);
+
+}
+
+}
+
+//////////////////////////////////////////////////
+// SIGNUP
+//////////////////////////////////////////////////
+
+async function signup(){
+
+const username=document.getElementById("signupUser").value;
+const password=document.getElementById("signupPass").value;
+
+const res=await fetch(API+"/signup",{
+
+method:"POST",
+
+headers:{ "Content-Type":"application/json"},
+
+body:JSON.stringify({username,password})
+
+});
+
+const data=await res.json();
+
+alert(data.message || data.error);
+
+}
+
+//////////////////////////////////////////////////
+// DASHBOARD
+//////////////////////////////////////////////////
+
+function showDashboard(){
+
+document.getElementById("auth").style.display="none";
+
+document.getElementById("dashboard").style.display="block";
 
 loadSites();
 
 }
 
+//////////////////////////////////////////////////
+// LOGOUT
+//////////////////////////////////////////////////
+
+function logout(){
+
+localStorage.removeItem("userId");
+
+location.reload();
+
+}
+
+//////////////////////////////////////////////////
+// PUBLISH
+//////////////////////////////////////////////////
+
+async function publishSite(){
+
+const slug=document.getElementById("slug").value.trim();
+
+const html=document.getElementById("code").value;
+
+const userId=localStorage.getItem("userId");
+
+if(!slug || !html){
+
+alert("Enter site name and code");
+
+return;
+
+}
+
+document.getElementById("loader").style.display="block";
+
+const res=await fetch(API+"/publish",{
+
+method:"POST",
+
+headers:{ "Content-Type":"application/json" },
+
+body:JSON.stringify({
+
+slug:slug,
+
+html:html,
+
+userId:userId
+
+})
+
+});
+
+const data=await res.json();
+
+document.getElementById("loader").style.display="none";
+
+alert(data.message || data.error);
+
+loadSites();
+
+}
+
+//////////////////////////////////////////////////
+// LOAD MY SITES
+//////////////////////////////////////////////////
+
 async function loadSites(){
 
-const res = await fetch("https://site.webed.in/sites");
+const userId=localStorage.getItem("userId");
 
-const sites = await res.json();
+const res=await fetch(API+"/mysites/"+userId);
 
-const container = document.getElementById("sitesList");
+const sites=await res.json();
+
+const container=document.getElementById("sitesList");
 
 container.innerHTML="";
 
-sites.forEach(site => {
+sites.forEach((site,i)=>{
 
-const div = document.createElement("div");
+const div=document.createElement("div");
 
 div.className="site";
 
-div.innerHTML = `
-${site.id}. 
-<a href="${site.url}" target="_blank">
-${site.url}
+div.innerHTML=`
+
+${i+1}. 
+<a href="https://site.webed.in/${site}" target="_blank">
+https://site.webed.in/${site}
 </a>
+
 `;
 
 container.appendChild(div);
@@ -112,7 +270,15 @@ container.appendChild(div);
 
 }
 
-loadSites();
+//////////////////////////////////////////////////
+// AUTO LOGIN
+//////////////////////////////////////////////////
+
+if(localStorage.getItem("userId")){
+
+showDashboard();
+
+}
 
 </script>
 
