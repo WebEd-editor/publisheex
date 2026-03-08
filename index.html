@@ -237,26 +237,35 @@ loadSites();
 // LOAD MY SITES
 //////////////////////////////////////////////////
 
-async function loadSites(){
+async function loadSites() {
+
   const container = document.getElementById("sitesList");
+  container.innerHTML = "";
 
   const userId = localStorage.getItem("userId");
 
-  fetch(`/mysites/${userId}`)
-  .then(res => res.json())
-  .then(sites => {
+  try {
 
-    const container = document.getElementById("mysites");
+    const res = await fetch(`/mysites/${userId}`);
+    const sites = await res.json();
 
     sites.forEach(site => {
+
       const div = document.createElement("div");
-      div.innerHTML = `<h3>${site}</h3>`;
+      div.className = "site-card";
+
+      div.innerHTML = `
+        <h3>${site}</h3>
+        <a href="/sites/${site}/index.html" target="_blank">Open</a>
+      `;
+
       container.appendChild(div);
+
     });
 
-  });
-
-});
+  } catch (err) {
+    console.error("Failed to load sites", err);
+  }
 
 }
 
