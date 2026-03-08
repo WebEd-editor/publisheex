@@ -246,7 +246,7 @@ async function loadSites() {
 
   try {
 
-    const res = await fetch(`/mysites/${userId}`);
+    const res = await fetch(API+`/mysites/${userId}`);
     const sites = await res.json();
 
     sites.forEach(site => {
