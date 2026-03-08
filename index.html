@@ -257,6 +257,7 @@ async function loadSites() {
       div.innerHTML = `
         <h3>${site}</h3>
         <a href="https://site.webed.in/${site}" target="_blank">Open</a>
+        <button onclick="deleteSite(${site})">delete</button>
       `;
 
       container.appendChild(div);
@@ -275,9 +276,28 @@ async function loadSites() {
 //////////////////////////////////////////////////
 
 if(localStorage.getItem("userId")){
+  showDashboard();
+}
 
-showDashboard();
+// delete site
+async function deleteSite(siteName){
 
+  const userId = localStorage.getItem("userId");
+
+  if(!confirm("Delete this site?")) return;
+
+  await fetch(API+"/deleteSite",{
+    method:"POST",
+    headers:{
+      "Content-Type":"application/json"
+    },
+    body: JSON.stringify({
+      userId,
+      siteName
+    })
+  });
+
+  loadSites();
 }
 
 </script>
