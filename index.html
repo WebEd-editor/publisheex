@@ -12,8 +12,20 @@ margin:auto;
 padding:20px;
 }
 
+.overlay {
+   position: fixed;
+   top: 0;
+   right: 0;
+   display: flex; justify-content: center; align-items: center;
+   background: black;
+   height: 100%; width: 100%;
+}
+.popupBox{
+   width: 200px; height: 300px; border: 2px solid grey;
+}
+
 input,textarea{
-width:100%;
+width:90%;
 padding:10px;
 margin:8px 0;
 }
@@ -43,54 +55,51 @@ border-bottom:1px solid #ddd;
 
 <body>
 
-<h2>WebEd</h2>
+<h2>WebEd Hosting</h2>
 
 <!-- LOGIN / SIGNUP -->
-
-<div id="auth">
-
-<h3>Login</h3>
-
-<input id="loginUser" placeholder="Username">
-<input id="loginPass" type="password" placeholder="Password">
-
-<button onclick="login()">Login</button>
-
-<hr>
-
-<h3>Sign Up</h3>
-
-<input id="signupUser" placeholder="Username">
-<input id="signupPass" type="password" placeholder="Password">
-
-<button onclick="signup()">Sign Up</button>
-
+<div id="auth" class="">
+  <div class="loginP" style="display: none">
+    <hr>
+    <h3>Login</h3>
+    <label for="loginUser">Name</label>
+    <input id="loginUser" placeholder="Username">
+    <label for="loginPass">Password</label>
+    <input id="loginPass" type="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <p id="loginloder"></p>
+    <p>Don't have an account?</p>
+    <button onclick="creatAccBtn()">Sign up</button>
+  </div>
+  <div class="signupP">
+    <hr>
+    <h3>Sign Up</h3>
+    <label for="loginUser">Name</label>
+    <input id="signupUser" placeholder="Username">
+    <label for="loginPass">Password</label>
+    <input id="signupPass" type="password" placeholder="Password">
+    <button onclick="signup()">Sign Up</button>
+    <p id="signuploder"></p>
+    <p>Already have an account?</p>
+    <button onclick="openLoginBtn()">Login</button>
+  </div>
 </div>
-
 <!-- DASHBOARD -->
-
 <div id="dashboard">
-
-<h3>Publish Website 🚀</h3>
-
-<input id="slug" placeholder="Website name (example: demo)">
-
-<textarea id="code" rows="8" placeholder="Paste your HTML code"></textarea>
-
-<button onclick="publishSite()">Publish</button>
-
-<p id="loader">⏳ Please wait publishing...</p>
-
-<hr>
-
-<h3>My Sites</h3>
-
-<div id="sitesList"></div>
-
-<br>
-
-<button onclick="logout()">Logout</button>
-
+    <h3 id="username"></h3>
+    <p id="userId"></p>
+    <h3>Publish Website 🚀</h3>
+    <input id="slug" placeholder="Website name (example: demo)">
+    <textarea id="code" rows="8" placeholder="Paste your HTML code"></textarea>
+    <button onclick="publishSite()">Publish</button>
+    <p id="loader">⏳ Please wait publishing...</p>
+    <hr>
+    <h3>My Sites</h3>
+    <div id="sitesList"></div>
+    <p style="text-align: justify;">Note: After a published your website. It may take up to 30–60 seconds to appear in the "My Sites" list.  
+       If it is not visible, please refresh the page after a few seconds.</p>
+    <br>
+    <button onclick="logout()">Logout</button>
 </div>
 
 <script>
@@ -102,34 +111,27 @@ const API = "https://site.webed.in";
 //////////////////////////////////////////////////
 
 async function login(){
+   let username=document.getElementById("loginUser").value.trim();
+   localStorage.setItem('weusername',username);
+   let password=document.getElementById("loginPass").value.trim();
+   let l = document.getElementById("loginloder");
+   l.innerHTML = "⏳ please wait...";
+   const res=await fetch(API+"/login",{
+      method:"POST",
+      headers:{ "Content-Type":"application/json"},
+      body:JSON.stringify({username,password})
+   });
 
-const username=document.getElementById("loginUser").value;
-const password=document.getElementById("loginPass").value;
+   const data=await res.json();
 
-const res=await fetch(API+"/login",{
-
-method:"POST",
-
-headers:{ "Content-Type":"application/json"},
-
-body:JSON.stringify({username,password})
-
-});
-
-const data=await res.json();
-
-if(data.userId){
-
-localStorage.setItem("userId",data.userId);
-
-showDashboard();
-
-}else{
-
-alert(data.error);
-
-}
-
+   if(data.userId){
+      localStorage.setItem("userId",data.userId);
+      showDashboard();
+      document.getElementById("username").innerHTML = `<h2>Hello, ${localStorage.weusername} </h2>\n<p>Type your website code and deploy online.</p>`;
+      document.getElementById("userId").innerHTML = `<p>Your user Id is ${localStorage.userId}</p>`;
+   }else{
+      alert(data.error); l.innerHTML=""; document.getElementById("loginUser").value=""; document.getElementById("loginPass").value="";
+   }
 }
 
 //////////////////////////////////////////////////
@@ -137,38 +139,42 @@ alert(data.error);
 //////////////////////////////////////////////////
 
 async function signup(){
+   const username=document.getElementById("signupUser").value.trim();
+   const password=document.getElementById("signupPass").value.trim();
+   let l=document.getElementById("signuploder");
+   l.innerHTML="Please wait...";
+   
+   const res=await fetch(API+"/signup",{
+      method:"POST",
+      headers:{ "Content-Type":"application/json"},
+      body:JSON.stringify({username,password})
+   });
 
-const username=document.getElementById("signupUser").value;
-const password=document.getElementById("signupPass").value;
-
-const res=await fetch(API+"/signup",{
-
-method:"POST",
-
-headers:{ "Content-Type":"application/json"},
-
-body:JSON.stringify({username,password})
-
-});
-
-const data=await res.json();
-
-alert(data.message || data.error);
-
+   const data=await res.json();
+   
+   alert(data.message || data.error);
+   l.innerHTML ="";
 }
+
+function creatAccBtn(){
+   document.querySelector(".loginP").style.display ="none";
+   document.querySelector(".signupP").style.display ="block";
+}
+function openLoginBtn(){
+   document.querySelector(".loginP").style.display ="block";
+   document.querySelector(".signupP").style.display ="none";
+} 
 
 //////////////////////////////////////////////////
 // DASHBOARD
 //////////////////////////////////////////////////
 
 function showDashboard(){
-
-document.getElementById("auth").style.display="none";
-
-document.getElementById("dashboard").style.display="block";
-
-loadSites();
-
+   document.getElementById("auth").style.display="none";
+   document.getElementById("dashboard").style.display="block";
+   document.getElementById("username").innerHTML = `<h2>Hello, ${localStorage.weusername} </h2>\n<p>Type your website code and deploy online.</p>`;
+   document.getElementById("userId").innerHTML = `<p>Your user Id is ${localStorage.userId}</p>`;
+   loadSites();
 }
 
 //////////////////////////////////////////////////
@@ -176,11 +182,8 @@ loadSites();
 //////////////////////////////////////////////////
 
 function logout(){
-
-localStorage.removeItem("userId");
-
-location.reload();
-
+   localStorage.removeItem("userId");
+   location.reload();
 }
 
 //////////////////////////////////////////////////
@@ -188,49 +191,31 @@ location.reload();
 //////////////////////////////////////////////////
 
 async function publishSite(){
+   const slug=document.getElementById("slug").value.trim();
+   const html=document.getElementById("code").value;
+   const userId=localStorage.getItem("userId");
 
-const slug=document.getElementById("slug").value.trim();
+   if(!slug || !html){
+      alert("Enter site name and code");
+      return;
+   }
 
-const html=document.getElementById("code").value;
+   document.getElementById("loader").style.display="block";
 
-const userId=localStorage.getItem("userId");
+   const res=await fetch(API+"/publish",{
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body:JSON.stringify({
+         slug:slug,
+         html:html,
+         userId:userId
+      })
+   });
 
-if(!slug || !html){
-
-alert("Enter site name and code");
-
-return;
-
-}
-
-document.getElementById("loader").style.display="block";
-
-const res=await fetch(API+"/publish",{
-
-method:"POST",
-
-headers:{ "Content-Type":"application/json" },
-
-body:JSON.stringify({
-
-slug:slug,
-
-html:html,
-
-userId:userId
-
-})
-
-});
-
-const data=await res.json();
-
-document.getElementById("loader").style.display="none";
-
-alert(data.message || data.error);
-
-loadSites();
-
+   const data=await res.json();
+   document.getElementById("loader").style.display="none";
+   alert(data.message || data.error);
+   loadSites();
 }
 
 //////////////////////////////////////////////////
@@ -281,10 +266,9 @@ if(localStorage.getItem("userId")){
 
 // delete site
 async function deleteSite(siteName){
-
   const userId = localStorage.getItem("userId");
 
-  if(!confirm("Delete this site?")) return;
+  if(!confirm("Delete this site?\nit can not be recovered.")) return;
 
   await fetch(API+"/deleteSite",{
     method:"POST",
@@ -296,6 +280,8 @@ async function deleteSite(siteName){
       siteName
     })
   });
+  
+  alert("site deleted successfully");
 
   loadSites();
 }
@@ -304,3 +290,5 @@ async function deleteSite(siteName){
 
 </body>
 </html>
+
+
