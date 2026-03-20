@@ -244,7 +244,7 @@ async function loadSites() {
 
       div.innerHTML = `
         <h3>${site}</h3>
-        <a href="https://site.webed.in/${site}" target="_blank">Open</a>
+        <a href="https://site.webed.in/${localStorage.weusername}/${site}" target="_blank">Open</a>
         <button onclick="deleteSite('${site}')">delete</button>
       `;
 
