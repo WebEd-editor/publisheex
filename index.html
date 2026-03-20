@@ -210,7 +210,8 @@ async function publishSite(){
       body:JSON.stringify({
          slug:slug,
          html:html,
-         userId:userId
+         userId:userId,
+         username: localStorage.weusername
       })
    });
 
