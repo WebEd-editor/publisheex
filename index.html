@@ -95,6 +95,7 @@ border-bottom:1px solid #ddd;
     <textarea id="code" rows="8" placeholder="Paste your HTML code"></textarea>
     <button onclick="publishSite()">Publish</button>
     <p id="loader">⏳ Please wait publishing...</p>
+    <button onclick="pasteCodeEx()">Paste Example Code</button>
     <hr>
     <h3>My Sites</h3>
     <div id="sitesList"></div>
@@ -105,6 +106,130 @@ border-bottom:1px solid #ddd;
 </div>
 
 <script>
+
+function pasteCodeEx(){
+  let t = document.getElementById("code");
+  t.innerTEXT = `
+<!-- this code made in webed -->
+<!-- full code made in WebEd tool -->
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;500;600;700;800;900;1000&family=Roboto:wght@300;400;500;700&display=swap" style="" />
+  <link id="material-icon-cdn-filled" rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" style="" />
+  <link id="material-icon-cdn-outlined" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" style="" />
+  <link id="material-icon-cdn-rounded" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" style="" />
+  <link id="google-font-Open-Sans" href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet" style="" />
+  <style id="webed-extracted-css">
+    .we-5oiviu {
+  background-blend-mode: screen;
+  border-radius: 0px;
+  color: rgb(255, 255, 255);
+  font-family: "Open Sans", sans-serif;
+  margin: 0px;
+  opacity: 1;
+  padding: 0px;
+}
+.we-ztpy9g {
+  background-blend-mode: screen;
+  border-radius: 0px;
+  height: 100vh;
+  opacity: 1;
+  width: 100%;
+}
+.we-1j1ou00 {
+  background-blend-mode: screen;
+  border-radius: 0px;
+  filter: brightness(0.7);
+  height: 100%;
+  object-fit: cover;
+  opacity: 1;
+  width: 100%;
+}
+.we-1cd2lyy {
+  align-items: center;
+  background-blend-mode: screen;
+  border-radius: 0px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
+  opacity: 1;
+  position: absolute;
+  top: 0px;
+  width: 100%;
+}
+.we-t2yjs6 {
+  background-blend-mode: screen;
+  border-radius: 0px;
+  color: rgb(255, 255, 255);
+  font-size: 58px;
+  margin: 0px;
+  opacity: 1;
+  position: relative;
+  text-align: center;
+  width: 90%;
+}
+.we-dfv5wz {
+  background-blend-mode: screen;
+  border-radius: 0px;
+  color: rgb(224, 224, 224);
+  opacity: 1;
+  position: relative;
+  text-align: center;
+}
+.we-1nwxp3h {
+  background: rgb(242, 242, 242);
+  background-blend-mode: screen;
+  border: none;
+  border-radius: 50px;
+  color: black;
+  font-family: roboto, sans-sarif;
+  padding: 10px;
+  position: relative;
+}
+.we-1emr3t6 {
+  background-attachment: initial;
+  background-blend-mode: screen;
+  background-clip: initial;
+  background-color: rgb(32, 74, 140);
+  background-image: initial;
+  background-origin: initial;
+  background-position: initial;
+  border-radius: 20px;
+  font-size: 30px;
+  height: 50px;
+  left: 200.5px;
+  opacity: 1;
+  position: absolute;
+  top: 17px;
+  width: 150px;
+}
+  </style>
+</head>
+<body class="selected we-5oiviu">
+  <section class="we-ztpy9g">
+    <video src="https://videos.pexels.com/video-files/8823300/8823300-hd_1280_720_30fps.mp4" class="we-1j1ou00" muted="" autoplay="">
+    </video>
+    <section class="selected we-1cd2lyy">
+      <h1 class="we-t2yjs6">
+        Diving into the water
+      </h1>
+      <p class="we-dfv5wz">
+        Water diving in this Summer Weekend
+      </p>
+      <button class="we-1nwxp3h">
+        See feature
+      </button>
+      <div class="we-1emr3t6">
+        🤿
+        <br style="" />
+      </div>
+    </section>
+  </section>
+</body>
+  `;
+} 
 
 const API = "https://site.webed.in";
 
