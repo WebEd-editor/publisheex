@@ -362,15 +362,21 @@ async function loadSites() {
     const res = await fetch(API+`/mysites/${userId}`);
     const sites = await res.json();
     container.innerHTML ="";
-    sites.forEach(site => {
+    sites.forEach(async site => {
 
       const div = document.createElement("div");
       div.className = "site-card";
+    
+      let respStatus = await fetch(API+`/site-status/${site}`);
+      let s = await respStatus.json();
+      let status ="";
+      if(s.githubSynced) { status = "site is live"; console.log(s.githubSynced) } else { status = "pending..."; console.log(s.githuSynced);}
 
       div.innerHTML = `
         <h3>${site}</h3>
         <a href="https://site.webed.in/${localStorage.weusername}/${site}" target="_blank">Open</a>
         <button onclick="deleteSite('${site}')">delete</button>
+        <p>${status}</p>
       `;
 
       container.appendChild(div);
