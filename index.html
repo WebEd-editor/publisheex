@@ -281,6 +281,7 @@ async function signup(){
    
    alert(data.message || data.error);
    l.innerHTML ="";
+   if(!data.error){openLoginBtn()}
 }
 
 function creatAccBtn(){
