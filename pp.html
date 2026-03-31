@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>HTML to Image</title>
+</head>
+<body>
+
+<h2>Enter HTML Code</h2>
+
+<textarea id="htmlInput" rows="10" cols="50">
+<h1 style="color:red;">Hello Sahil 🚀</h1>
+<p>This is Puppeteer Image</p>
+</textarea>
+
+<br><br>
+
+<button onclick="generateImage()">Download Image</button>
+
+<script>
+async function generateImage() {
+  const html = document.getElementById('htmlInput').value;
+
+  const res = await fetch('http://site.webed.in/generate-image', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ html })
+  });
+
+  const blob = await res.blob();
+  const url = window.URL.createObjectURL(blob);
+
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'output.png';
+  a.click();
+}
+</script>
+
+</body>
+</html>
