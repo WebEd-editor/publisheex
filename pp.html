@@ -15,12 +15,14 @@
 <br><br>
 
 <button onclick="generateImage()">Download Image</button>
+<p id="loder"></p>
 
 <script>
 async function generateImage() {
   const html = document.getElementById('htmlInput').value;
+  const l = document.getElementById("loder");
 
-  const res = await fetch('http://site.webed.in/generate-image', {
+  const res = await fetch('https://site.webed.in/generate-image', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -28,13 +30,18 @@ async function generateImage() {
     body: JSON.stringify({ html })
   });
 
+  l.textContent = "please wait..";
+
   const blob = await res.blob();
   const url = window.URL.createObjectURL(blob);
+  
+  l.textContent = "img created..";
 
   const a = document.createElement('a');
   a.href = url;
   a.download = 'output.png';
   a.click();
+  l.textContent ="";
 }
 </script>
 
