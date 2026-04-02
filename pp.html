@@ -15,8 +15,8 @@
 <br><br>
 
 <select id="deviceModel">
-  <option value="mobile">mobile</option>
   <option value="pc">computer</option>
+  <option value="mobile">mobile</option>
 </select>
 
 <button onclick="generateImage()">Download Image</button>
@@ -27,6 +27,8 @@ async function generateImage() {
   const html = document.getElementById('htmlInput').value;
   const model = document.getElementById('deviceModel').value;
   const l = document.getElementById("loder");
+
+  l.textContent = "please wait..";
 
   const res = await fetch('https://site.webed.in/generate-image', {
     method: 'POST',
